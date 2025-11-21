@@ -5,6 +5,7 @@ import org.example.msdigio.client.ClientesComprasClient;
 import org.example.msdigio.client.ProdutosClient;
 import org.example.msdigio.dto.*;
 import org.example.msdigio.exception.NaoEncontradoException;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +24,10 @@ public class ComprasServiceImpl implements ComprasService {
     private final ProdutosClient produtosClient;
     private final ClientesComprasClient clientesClient;
 
+    @Cacheable(
+            value = "compras_paginadas",
+            key = "#pageable.pageNumber + '-' + #pageable.pageSize"
+    )
     @Override
     public Page<CompraDetalhadaDTO> listarComprasPageada(Pageable pageable) {
 
@@ -47,7 +52,6 @@ public class ComprasServiceImpl implements ComprasService {
                 }))
                 .toList();
 
-        // PAGINAÇÃO MANUAL
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), listaFiltrada.size());
 
@@ -57,6 +61,7 @@ public class ComprasServiceImpl implements ComprasService {
         return new PageImpl<>(pageContent, pageable, listaFiltrada.size());
     }
 
+    @Cacheable(value = "compras")
     @Override
     public List<CompraDetalhadaDTO> listarCompras() {
 
@@ -82,6 +87,7 @@ public class ComprasServiceImpl implements ComprasService {
                 .toList();
     }
 
+    @Cacheable(value = "maior_compra", key = "#ano")
     @Override
     public MaiorCompraDTO maiorCompraPorAno(Integer ano) {
         return listarCompras().stream()
@@ -98,6 +104,7 @@ public class ComprasServiceImpl implements ComprasService {
                 .orElseThrow(() -> new NaoEncontradoException("Nenhuma compra encontrada no ano " + ano));
     }
 
+    @Cacheable(value = "clientes_fieis")
     @Override
     public List<ClienteFielDTO> clientesFieis() {
 
@@ -120,6 +127,7 @@ public class ComprasServiceImpl implements ComprasService {
                 .toList();
     }
 
+    @Cacheable(value = "recomendacao_cliente", key = "#cpf")
     @Override
     public RecomendacaoDTO recomendacao(String cpf) {
         var comprasCliente = listarCompras().stream()
