@@ -19,8 +19,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(502).body(Map.of("erro", ex.getMessage()));
     }
 
-//    @ExceptionHandler(Exception.class)
-//    public ResponseEntity<?> handleGeneric(Exception ex) {
-//        return ResponseEntity.status(500).body(Map.of("erro", "Erro interno no servidor"));
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleGeneric(Exception ex) {
+        return ResponseEntity.status(500).body(Map.of("erro", "Erro interno no servidor"));
+    }
 }

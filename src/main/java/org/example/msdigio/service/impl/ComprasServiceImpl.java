@@ -24,12 +24,7 @@ public class ComprasServiceImpl implements ComprasService {
     private final ClientesComprasClient clientesClient;
 
     @Override
-    public Page<CompraDetalhadaDTO> listarComprasPageada(
-            String cliente,
-            String cpf,
-            String produto,
-            Integer ano,
-            Pageable pageable) {
+    public Page<CompraDetalhadaDTO> listarComprasPageada(Pageable pageable) {
 
         var produtosMap = produtosClient.buscarProdutos().stream()
                 .collect(Collectors.toMap(ProdutoDTO::getCodigo, Function.identity()));
@@ -50,10 +45,6 @@ public class ComprasServiceImpl implements ComprasService {
                                     .multiply(BigDecimal.valueOf(c.getQuantidade())))
                             .build();
                 }))
-                .filter(c -> cliente == null || c.getClienteNome().equalsIgnoreCase(cliente))
-                .filter(c -> cpf == null || c.getClienteCpf().equals(cpf))
-                .filter(c -> produto == null || c.getProdutoTipo().equalsIgnoreCase(produto))
-                .filter(c -> ano == null || c.getAnoCompra().equals(ano.toString()))
                 .toList();
 
         // PAGINAÇÃO MANUAL

@@ -23,23 +23,13 @@ public class ComprasController {
 
     @GetMapping("/compras")
     public ResponseEntity<Page<CompraDetalhadaDTO>> listarCompras(
-            @RequestParam(required = false) String cliente,
-            @RequestParam(required = false) String cpf,
-            @RequestParam(required = false) String produto,
-            @RequestParam(required = false) Integer ano,
-
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-
-            @RequestParam(required = false, defaultValue = "valorTotal,asc") String sort
+            @RequestParam(defaultValue = "37") int size
     ) {
-        Pageable pageable = PageRequest.of(
-                page,
-                size
-        );
+        Pageable pageable = PageRequest.of(page, size);
 
         Page<CompraDetalhadaDTO> resultado =
-                comprasService.listarComprasPageada(cliente, cpf, produto, ano, pageable);
+                comprasService.listarComprasPageada(pageable);
 
         return ResponseEntity.ok(resultado);
     }
@@ -54,7 +44,7 @@ public class ComprasController {
         return ResponseEntity.ok(comprasService.clientesFieis());
     }
 
-    @GetMapping("/recomendacao/{cpf}")
+    @GetMapping("/recomendacao/cliente/tipo/{cpf}")
     public ResponseEntity<RecomendacaoDTO> recomendacao(@PathVariable String cpf) {
         return ResponseEntity.ok(comprasService.recomendacao(cpf));
     }

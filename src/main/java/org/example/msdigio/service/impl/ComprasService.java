@@ -9,12 +9,7 @@ import java.util.List;
 
 public interface ComprasService {
 
-    Page<CompraDetalhadaDTO> listarComprasPageada(String cliente,
-                                           String cpf,
-                                           String produto,
-                                           Integer ano,
-                                           Pageable pageable);
-
+    Page<CompraDetalhadaDTO> listarComprasPageada(Pageable pageable);
     List<CompraDetalhadaDTO> listarCompras();
     MaiorCompraDTO maiorCompraPorAno(Integer ano);
     List<ClienteFielDTO> clientesFieis();
